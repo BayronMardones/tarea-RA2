@@ -5,45 +5,45 @@
 #include <unistd.h>
 #include "game.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) { //Función principal
     if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <port>" << std::endl;
-        return 1;
+        std::cerr << "Usage: " << argv[0] << " <server_ip> <port>" << std::endl; //Mensaje de error
+        return 1; 
     }
 
-    const char* serverIp = argv[1];
+    const char* serverIp = argv[1]; //Dirección IP del servidor
     int port = atoi(argv[2]);
-    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-    //creacion del socket
+    int clientSocket = socket(AF_INET, SOCK_STREAM, 0); //Creacion del socket TCP
+    //Verificar si el socket se creo correctamente
     if (clientSocket < 0) {
         std::cerr << "Error crear el socket" << std::endl;
         return 1;
     }
-    //direccion del servidor
-    sockaddr_in serverAddr;
+    //Configuracion del socket
+    sockaddr_in serverAddr; //Direccion del servidor
     memset(&serverAddr, 0, sizeof(serverAddr));
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(port);
-    if (inet_pton(AF_INET, serverIp, &serverAddr.sin_addr) <= 0) {
-        std::cerr << "Invalid address/ Address not supported" << std::endl;
+    serverAddr.sin_family = AF_INET; 
+    serverAddr.sin_port = htons(port); 
+    if (inet_pton(AF_INET, serverIp, &serverAddr.sin_addr) <= 0) { //Conversion de la direccion IP
+        std::cerr << "Invalid address/ Address not supported" << std::endl; //Mensaje de error
         close(clientSocket);
         return 1;
     }
-    //conexion del socket
-    if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-                std::cerr << "conexion fallida" << std::endl;
+    //Conexion al servidor
+    if (connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) { 
+                std::cerr << "Conexion fallida" << std::endl; //Mensaje de error
         return 1;
     }
 
-    Game game;
-    char buffer[256];
-    bool clientTurn = false;
+    Game game; //Creacion del objeto Game
+    char buffer[256]; 
+    bool clientTurn = false; //Variable para saber si es el turno del cliente
 
-    while (true) {
-        memset(buffer, 0, 256);
-        game.printBoard();
+    while (true) { 
+        memset(buffer, 0, 256); //Limpiar el buffer
+        game.printBoard(); //Muestra el tablero
         if (clientTurn) {
-            std::cout << "Your turn. Enter column (1-7): ";
+            std::cout << "Tu turno. Ingresa columna (1-7): "; 
             int col;
             std::cin >> col;
             snprintf(buffer, sizeof(buffer), "%d", col);
@@ -55,13 +55,13 @@ int main(int argc, char *argv[]) {
             if (game.dropPiece(col, 'C')) {
                 if (game.checkWin('C')) {
                     game.printBoard();
-                    std::cout << "You win!" << std::endl;
+                    std::cout << "¡TU GANAS!" << std::endl;
                     break;
                 }
                 clientTurn = false;
             }
         } else {
-            std::cout << "Waiting for server's move..." << std::endl;
+            std::cout << "Esperando el turno del servidor..." << std::endl;
             //read(clientSocket, buffer, 255);
             if (read(clientSocket, buffer, 255) <= 0) {
                 std::cerr << "Servidor finalizado." << std::endl;
@@ -71,20 +71,20 @@ int main(int argc, char *argv[]) {
             if (game.dropPiece(col, 'S')) {
                 if (game.checkWin('S')) {
                     game.printBoard();
-                    std::cout << "Server wins!" << std::endl;
+                    std::cout << "¡EL SERVIDOR GANA!" << std::endl;
                     break;
                 }
-                clientTurn = true;
+                clientTurn = true; //Cambiar el turno al cliente
             }
         }
         if (game.isFull()) {
             game.printBoard();
-            std::cout << "It's a tie!" << std::endl;
+            std::cout << "¡Es un empate!" << std::endl;
             break;
         }
     }
 
-    close(clientSocket);
+    close(clientSocket); //Cierra el socket del cliente
     return 0;
 }
 
