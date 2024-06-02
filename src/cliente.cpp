@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]) { //Función principal
     if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <port>" << std::endl; //Mensaje de error
+        std::cerr << "Uso: " << argv[0] << " <server_ip> <port>" << std::endl; //Mensaje de error
         return 1; 
     }
 
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) { //Función principal
     serverAddr.sin_family = AF_INET; 
     serverAddr.sin_port = htons(port); 
     if (inet_pton(AF_INET, serverIp, &serverAddr.sin_addr) <= 0) { //Conversion de la direccion IP
-        std::cerr << "Invalid address/ Address not supported" << std::endl; //Mensaje de error
+        std::cerr << "Direccion no valida/ Direccion no compatible" << std::endl; //Mensaje de error
         close(clientSocket);
         return 1;
     }
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) { //Función principal
             int col;
             std::cin >> col;
             snprintf(buffer, sizeof(buffer), "%d", col);
-            if (write(clientSocket, buffer, strlen(buffer)) < 0) {
+            if (write(clientSocket, buffer, strlen(buffer)) < 0) { //Escribir en el socket
                 std::cerr << "Servidor finalizado." << std::endl;
                 break;
             }
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) { //Función principal
                 std::cerr << "Servidor finalizado." << std::endl;
                 break;
             }
-            int col = atoi(buffer);
+            int col = atoi(buffer); //Convertir el buffer a un entero
             if (game.dropPiece(col, 'S')) {
                 if (game.checkWin('S')) {
                     game.printBoard();
