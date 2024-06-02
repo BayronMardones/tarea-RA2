@@ -24,6 +24,7 @@ Donde el [puerto] es el puerto TCP que escuchara las conexiones.
 Ejemplo:
 ./servidor 7777
 ./cliente 192.168.1.100 7777
+make clean 
 
 
 
