@@ -6,17 +6,18 @@
 
 class Game {
 public:
-    Game();
-    void printBoard();
-    bool dropPiece(int col, char piece);
-    bool checkWin(char piece);
-    bool isFull();
+    Game(); //Inicializa el tablero
+    void printBoard(); //Imprime el tablero
+    bool dropPiece(int col, char piece); //Coloca una pieza en la columna col
+    bool checkWin(char piece); //Revisa si hay un ganador
+    bool isFull(); //Revisa si el tablero está lleno
 
 private:
-    std::vector<std::vector<char>> board;
-    bool checkHorizontal(char piece);
-    bool checkVertical(char piece);
-    bool checkDiagonal(char piece);
+    std::vector<std::vector<char>> board; //Tablero de juego
+    bool checkHorizontal(char piece); //Revisa si hay 4 en línea horizontal
+    bool checkVertical(char piece); //Revisa si hay 4 en línea vertical
+    bool checkDiagonal(char piece); //Revisa si hay 4 en línea diagonal
 };
 
-#endif
+#endif // GAME_H
+
