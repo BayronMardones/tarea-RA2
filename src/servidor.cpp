@@ -23,7 +23,6 @@ void handleClient(int clientSocket, int playerNum) {
     }
     Game game;
     char buffer[256];
-    // bool clientTurn = rand() % 2 == 0;
     bool clientTurn = false;
 
     char clientPiece = 'C';
@@ -31,7 +30,6 @@ void handleClient(int clientSocket, int playerNum) {
 
     while (true) { //Bucle principal del juego
         memset(buffer, 0, 256); //Limpiar el buffer
-        game.printBoard(); //Muestra el tablero actual
         if (clientTurn) { //Turno del cliente
             std::cout << "Esperando turno del cliente" << std::endl; 
             // read(clientSocket, buffer, 255);
@@ -44,7 +42,6 @@ void handleClient(int clientSocket, int playerNum) {
             if (game.dropPiece(col, clientPiece)) { 
                 std::cout << "Jugador [IP " << playerNum << ":puerto " << playerNum << "] juega columna " << col << std::endl;
                 if (game.checkWin(clientPiece)) {//Revisar si el cliente ganó
-                    // game.printBoard();
                     std::cout << "EL JUGADOR [" << playerNum << "] GANA!" << std::endl;
                     break;
                 }
@@ -67,14 +64,12 @@ void handleClient(int clientSocket, int playerNum) {
             }
             std::cout << "Juego [ IP"<< playerNum << ":puerto" << playerNum << "] servidor juega columna "<< col << std::endl;
             if (game.checkWin(serverPiece)) {
-                // game.printBoard();
                 std::cout << "EL SERVIDOR GANA!" << std::endl;
                 break;
             }
             clientTurn = true;
         }
         if (game.isFull()) {
-            // game.printBoard();
             std::cout << "empate..." << std::endl;
             break;
         }
@@ -110,7 +105,7 @@ int main(int argc, char *argv[]) {
 
     //enlace del socket al puerto ingresado
     if (bind(serverSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0) { //Enlazar el socket al puerto
-        std::cerr << "Error on binding" << std::endl;
+        std::cerr << "Error escuchando" << std::endl;
         return 1;
     }
 
